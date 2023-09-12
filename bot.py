@@ -1,25 +1,25 @@
 import discord
-from discord.ext import commands
+from discord import app_commands
 import config
 
 intents = discord.Intents.default()
-bot = commands.Bot(command_prefix="!", intents=intents)
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
-@bot.event
+@client.event
 async def on_ready():
-    print(f"We have logged in as {bot.user}")
+    print(f'We have logged in as {client.user}')
 
-@bot.command()
-async def set_game_channel(ctx, channel: discord.TextChannel):
-    config.GAME_CHANNEL_ID = channel.id
-    await ctx.send(f"Game channel set to: {channel.name}")
+@client.event
+async def on_guild_join(guild):
+    general_channel = discord.utils.get(guild.text_channels, name='general')
+    if general_channel:
+        await general_channel.send('Hey! Set a channel for the games using `/setgame`')
 
-@bot.command()
-async def game_channel(ctx):
-    if config.GAME_CHANNEL_ID:
-        channel = bot.get_channel(config.GAME_CHANNEL_ID)
-        await ctx.send(f"The game channel is: {channel.name}")
-    else:
-        await ctx.send("The game channel is not set.")
+@tree.command(name="setgame", description="Set the channel for games")
+async def setgame(ctx):
+    await ctx.send("This is a test")
+    pass 
 
-bot.run(config.TOKEN)
+
+client.run(config.TOKEN)
