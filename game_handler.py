@@ -66,8 +66,7 @@ async def start_game(guild_id):
 
         else:
             timestamp = int(time.time())
-
-            # Create the URL with the timestamp as a query parameter
+ 
             image_url = f"https://random.imagecdn.app/1920/1800?timestamp={timestamp}"
             
             embed = discord.Embed(
