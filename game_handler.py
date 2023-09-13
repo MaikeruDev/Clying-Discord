@@ -1,4 +1,5 @@
 import asyncio
+import time
 from utils.helpers import check_game_channel, get_lobby
 from utils.database import get_game_channel
 from global_vars import client, tree 
@@ -64,12 +65,17 @@ async def start_game(guild_id):
             embed.set_image(url="https://media.discordapp.net/attachments/1097279128312484042/1151150114698694697/maikeru.dev_an_image_of_a_person_in_a_black_cloak_from_a_poker__4abb1c99-b971-4c9c-80b6-238fe4aaae45.png?width=936&height=936")
 
         else:
+            timestamp = int(time.time())
+
+            # Create the URL with the timestamp as a query parameter
+            image_url = f"https://random.imagecdn.app/1920/1800?timestamp={timestamp}"
+            
             embed = discord.Embed(
                 title="You are not the liar!",
                 description="You have to explain your picture to the others!",
                 color=0x4CAF50,
             )
-            embed.set_image(url="https://random.imagecdn.app/1920/1800")
+            embed.set_image(url=image_url)
 
         await lobby["players"][i].send(embed=embed)
 
