@@ -16,6 +16,16 @@ Click [here](https://discord.com/api/oauth2/authorize?client_id=1151068827686285
   - Engage your community with interactive games.
   - Foster camaraderie with thrilling games designed to test your skills.
 
+### How to Play
+
+1. **Initiating the Game**: Start a new game by using the command `/creategame`.
+2. **Receiving the Images**: Once the game begins, all players, except for the liar, will receive a random image.
+3. **Discussion Phase**: Players take turns describing the image they received. The liar has to pay close attention and come up with a believable description of an image they haven't seen.
+4. **Voting Phase**: After the discussion, players vote on who they believe is the liar. The player with the most votes is revealed.
+5. **Revelation**: The true identity of the liar is revealed, and points are awarded based on the voting results. 
+
+Remember, the key to winning is to be convincing, whether you are telling the truth or weaving a tale of deception!
+
 ## Setup and Installation
 
 1. **Clone the Repository**
