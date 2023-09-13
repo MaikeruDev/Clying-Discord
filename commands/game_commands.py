@@ -3,11 +3,11 @@ import discord
 from discord import app_commands
 from discord import Embed
 from utils.helpers import check_game_channel, get_lobby
-from game_handler import start_game
+from utils.database import get_game_channel
+from game_handler import start_game 
+from global_vars import client, tree, active_lobbies 
 
-from global_vars import active_lobbies
-
-def setup_game_commands(client, tree): 
+def setup_game_commands(): 
 
     @tree.command(name="creategame", description="Create a new game lobby", guild=discord.Object(id=1151074499614224447))
     async def creategame(ctx):
@@ -25,6 +25,7 @@ def setup_game_commands(client, tree):
         active_lobbies[guild_id] = {
             "creator": creator,
             "players": [creator],
+            "current_player": -1,
         }
         await ctx.response.send_message(
     f"🎉 **Game Lobby Opened!** 🎉\n\n"
@@ -49,6 +50,10 @@ def setup_game_commands(client, tree):
 
         if player in active_lobbies[guild_id]["players"]:
             await ctx.response.send_message(f"🔹 You have already joined the game lobby.")
+            return
+ 
+        if len(active_lobbies[guild_id]["players"]) >= 10:
+            await ctx.response.send_message(f"🔹 The game lobby is full.")
             return
 
         active_lobbies[guild_id]["players"].append(player)
@@ -89,12 +94,11 @@ def setup_game_commands(client, tree):
         if player not in active_lobbies[guild_id]["players"]:
             await ctx.response.send_message("🔹 You have not joined the game lobby.")
             return
-        
-        #add an if statement to check if the player that leaves is the host. if so and he is the last player, close the game. if there are still other players make them the host
+         
         if player == active_lobbies[guild_id]["creator"]:
             if len(active_lobbies[guild_id]["players"]) == 1:
                 del active_lobbies[guild_id]
-                await ctx.response.send_message(f"🔹 The game created by {player.mention} has been closed.")
+                await ctx.response.send_message(f"🔹 The game created by {player.mention} has been closed due to not enough players.")
                 return
             else:
                 active_lobbies[guild_id]["creator"] = active_lobbies[guild_id]["players"][1]
@@ -104,7 +108,7 @@ def setup_game_commands(client, tree):
         
         active_lobbies[guild_id]["players"].remove(player)
         await ctx.response.send_message(f"🔹 {player.mention} has left the game lobby.")
-
+  
 
     @tree.command(name="startgame", description="Start the game with the current lobby", guild=discord.Object(id=1151074499614224447))
     async def startgame(ctx):
@@ -126,8 +130,8 @@ def setup_game_commands(client, tree):
             await ctx.response.send_message("🔹 You are not the host of this game.") 
             return
          
-        if len(lobby["players"]) < 2:
-            await ctx.response.send_message("🔹 You need at least 2 players to start the game.")
+        if len(lobby["players"]) < 3:
+            await ctx.response.send_message("🔹 You need at least 3 players to start the game.")
             return
  
         player_mentions = [player.mention for player in lobby["players"]]
@@ -144,9 +148,65 @@ def setup_game_commands(client, tree):
         embed.add_field(name="⏳ Start Time", value="Starting in a few moments...", inline=False)
         embed.set_footer(text="Make sure to follow the game rules and have fun! 🙂")  
 
-        await ctx.response.send_message(embed=embed)
+        await ctx.response.send_message(embed=embed) 
+
+        lobby["started"] = True
  
+        await start_game(ctx.guild.id)
+
+        game_channel_id = get_game_channel(ctx.guild.id)
+        game_channel = client.get_channel(game_channel_id)
+
+        await game_channel.send("🔹 Do you want to play again?")
+        await game_channel.send("🔹 Type `/playagain` to play again or `/closegame` to close the lobby.")
+        await asyncio.sleep(300)
+        if ctx.response.is_done():
+            return
+        else:
+            await game_channel.send("🔹 No response received. The game lobby has been closed.")
+            del active_lobbies[ctx.guild.id]
+            return
+        
+    @tree.command(name="playagain", description="Play the game again", guild=discord.Object(id=1151074499614224447))
+    async def playagain(ctx):
+        if not check_game_channel(ctx):
+            await ctx.response.send_message("🔹 You can only use this command in the designated game channel.")
+            return
+         
+        lobby = get_lobby(ctx.guild.id)
+ 
+        if not lobby:
+            await ctx.response.send_message("🔹 No active game lobby found in this server.")
+            return
+         
+        if ctx.user not in lobby["players"]:
+            await ctx.response.send_message("🔹 You have not joined the game lobby.")
+            return
+          
+        if ctx.user != lobby["creator"]: 
+            await ctx.response.send_message("🔹 You are not the host of this game.") 
+            return
+         
+        if len(lobby["players"]) < 3:
+            await ctx.response.send_message("🔹 You need at least 3 players to start the game.")
+            return
+
+        await ctx.response.send_message("🔹 The game will start in a few moments...")
         await asyncio.sleep(2)
 
+        lobby["started"] = True
  
-        await start_game(ctx.guild.id, client, tree)
+        await start_game(ctx.guild.id) 
+        
+        game_channel_id = get_game_channel(ctx.guild.id)
+        game_channel = client.get_channel(game_channel_id)
+
+        await game_channel.send("🔹 Do you want to play again?")
+        await game_channel.send("🔹 Type `/playagain` to play again or `/closegame` to close the lobby.")
+        await asyncio.sleep(300)
+        if ctx.response.is_done():
+            return
+        else:
+            await game_channel.send("🔹 No response received. The game lobby has been closed.")
+            del active_lobbies[ctx.guild.id]
+            return

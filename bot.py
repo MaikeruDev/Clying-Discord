@@ -1,32 +1,23 @@
 import config
 import logging
 from datetime import datetime
+from global_vars import client, tree
 from utils.database import set_game, get_game_channel
 from commands import game_commands 
 import discord 
 from discord import app_commands
 
-intents = discord.Intents.default()
-intents.members = True
-intents.guilds = True
-intents.voice_states = True
-intents.messages = True
+game_commands.setup_game_commands()
  
-client = discord.Client(intents=intents)
-tree = app_commands.CommandTree(client)
-
-game_commands.setup_game_commands(client, tree)
- 
-""" now = datetime.now()
+now = datetime.now()
  
 timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
  
-logging.basicConfig(                                                                            For Final use only
+logging.basicConfig(                                                              
     filename=f'logs/bot_log_{timestamp}.log',
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-) """
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')             # For testing only
+) 
  
 @client.event
 async def on_ready(): 
