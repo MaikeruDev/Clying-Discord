@@ -1,5 +1,6 @@
 import asyncio
 import discord
+import logging
 from discord import app_commands
 from discord import Embed
 from utils.helpers import check_game_channel, get_lobby
@@ -9,7 +10,7 @@ from global_vars import client, tree, active_lobbies
 
 def setup_game_commands(): 
 
-    @tree.command(name="creategame", description="Create a new game lobby", guild=discord.Object(id=1151074499614224447))
+    @tree.command(name="creategame", description="Create a new game lobby")
     async def creategame(ctx):
         if not check_game_channel(ctx):
             await ctx.response.send_message("You can only use this command in the designated game channel.")
@@ -21,6 +22,8 @@ def setup_game_commands():
         if guild_id in active_lobbies:
             await ctx.response.send_message("🔹 A game is already active in this server.")
             return
+        
+        logging.info(f"Game lobby created by {creator.name} in {ctx.guild.name} (ID: {ctx.guild.id})")
 
         active_lobbies[guild_id] = {
             "creator": creator,
@@ -35,7 +38,7 @@ def setup_game_commands():
     f"Get ready for a thrilling adventure! Gather your friends and let the fun begin! 💫"
 ) 
         
-    @tree.command(name="join", description="Join an existing game lobby", guild=discord.Object(id=1151074499614224447))
+    @tree.command(name="join", description="Join an existing game lobby")
     async def join(ctx):
         if not check_game_channel(ctx):
             await ctx.response.send_message("🔹 You can only use this command in the designated game channel.")
@@ -59,7 +62,7 @@ def setup_game_commands():
         active_lobbies[guild_id]["players"].append(player)
         await ctx.response.send_message(f"🔹 {player.mention} has joined the game lobby.") 
 
-    @tree.command(name="closegame", description="Close the currently active game", guild=discord.Object(id=1151074499614224447))
+    @tree.command(name="closegame", description="Close the currently active game")
     async def closegame(ctx): 
         if not check_game_channel(ctx):
             await ctx.response.send_message("🔹 You can only use this command in the designated game channel.")
@@ -78,7 +81,7 @@ def setup_game_commands():
         else:
             await ctx.response.send_message("🔹 No active game found in this server.")
  
-    @tree.command(name="leave", description="Leave the currently active game", guild=discord.Object(id=1151074499614224447))
+    @tree.command(name="leave", description="Leave the currently active game")
     async def leave(ctx): 
         if not check_game_channel(ctx):
             await ctx.response.send_message("🔹 You can only use this command in the designated game channel.")
@@ -110,7 +113,7 @@ def setup_game_commands():
         await ctx.response.send_message(f"🔹 {player.mention} has left the game lobby.")
   
 
-    @tree.command(name="startgame", description="Start the game with the current lobby", guild=discord.Object(id=1151074499614224447))
+    @tree.command(name="startgame", description="Start the game with the current lobby")
     async def startgame(ctx):
         if not check_game_channel(ctx):
             await ctx.response.send_message("🔹 You can only use this command in the designated game channel.")
@@ -167,7 +170,7 @@ def setup_game_commands():
             del active_lobbies[ctx.guild.id]
             return
         
-    @tree.command(name="playagain", description="Play the game again", guild=discord.Object(id=1151074499614224447))
+    @tree.command(name="playagain", description="Play the game again")
     async def playagain(ctx):
         if not check_game_channel(ctx):
             await ctx.response.send_message("🔹 You can only use this command in the designated game channel.")

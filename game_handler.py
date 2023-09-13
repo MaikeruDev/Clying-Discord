@@ -7,7 +7,7 @@ import discord
 import random
  
 
-@tree.command(name="next", description="End your turn early", guild=discord.Object(id=1151074499614224447))
+@tree.command(name="next", description="End your turn early")
 async def next(ctx):   
     
     if not check_game_channel(ctx):

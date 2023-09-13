@@ -21,9 +21,8 @@ logging.basicConfig(
  
 @client.event
 async def on_ready(): 
-    logging.info(f"We have logged in as {client.user}")
-
-    await tree.sync(guild=discord.Object(id=1151074499614224447)) 
+    logging.info(f"We have logged in as {client.user}")  
+    #await tree.sync(guild=discord.Object(id=1151074499614224447)) 
 
 @client.event
 async def on_guild_join(guild): 
@@ -49,7 +48,16 @@ async def on_guild_join(guild):
 
         logging.info(f"Joined new guild: {guild.name} (ID: {guild.id})")
 
-@tree.command(name="setgame", description="Set the channel for games", guild=discord.Object(id=1151074499614224447))
+@tree.command(name='sync', description='Owner only')
+async def sync(ctx):
+    if ctx.user.id == 809873766758088766:
+        await tree.sync()
+        logging.info('Command tree synced.')
+        await ctx.response.send_message('Synced!')
+    else:
+        await ctx.response.send_message('You must be the owner to use this command!')
+
+@tree.command(name="setgame", description="Set the channel for games")
 async def setgame(ctx):
     guild_id = ctx.guild.id
     channel_id = ctx.channel.id
@@ -62,6 +70,7 @@ async def setgame(ctx):
 
 @tree.command(name="help", description="Show help information")
 async def help(ctx):
+    logging.info(f"Help command used by {ctx.user} in {ctx.guild.name} (ID: {ctx.guild.id})")
     embed = discord.Embed(
         title="Clying Bot Help",
         description="Welcome to the Clying! Here are the commands you can use to play games with your friends:",
