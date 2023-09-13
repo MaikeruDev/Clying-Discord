@@ -24,6 +24,7 @@ cryptography==41.0.3
 cymem==2.0.7
 decorator==4.4.2
 dill==0.3.7
+discord.py==2.3.2
 elevenlabs==0.2.17
 emoji==1.7.0
 exceptiongroup==1.1.3
