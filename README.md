@@ -1,4 +1,4 @@
-# Clying - The Ultimate Discord Bot for Gaming
+# Clying - A fum Discord Bot
 
 Hello! I'm Clying, a Discord bot created by [MaikeruDev](https://github.com/MaikeruDev) to enhance your gaming experiences on Discord. I offer a range of commands that facilitate smooth and fun gaming sessions with your friends and communities. 
 
@@ -71,4 +71,4 @@ This project is open-source and available under the [MIT License](LICENSE).
 - **GitHub:** [MaikeruDev](https://github.com/MaikeruDev)
 - **Discord:** maikeru.dev
 
-Thank you for checking out Clying, the ultimate gaming experience on Discord. Enjoy gaming!
+Thank you for checking out Clying. Enjoy gaming!
