@@ -1,4 +1,4 @@
-# Clying - A fum Discord Bot
+# Clying - A fun Discord Bot
 
 Hello! I'm Clying, a Discord bot created by [MaikeruDev](https://github.com/MaikeruDev) to enhance your gaming experiences on Discord. I offer a range of commands that facilitate smooth and fun gaming sessions with your friends and communities. 
 
